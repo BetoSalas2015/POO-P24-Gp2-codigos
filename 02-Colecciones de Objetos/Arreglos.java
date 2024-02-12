@@ -6,6 +6,7 @@ public class Arreglos {
     private int arreglo[], variableInt;
     private int []arreglo2, arreglo5;
     private int[] arreglo3, arreglo6 = {0, 1,2,3,4,5,610,34 };
+    private int[][] matriz = { {1, 2, 3}, { 4 }, {5, 6, 7, 8}, {9, 10} };
     
     //  Constructor
     public Arreglos() {
