@@ -2,6 +2,8 @@
  * Dibujo
  */
 import java.awt.*;
+import java.awt.geom.*;
+
 public class Dibujo extends Frame {
 
     public Dibujo() {               //  Constructor
@@ -15,6 +17,12 @@ public class Dibujo extends Frame {
             return true;
         }
         return super.handleEvent(e);
+    }
+
+    public void paint(Graphics g) {
+        Graphics2D g2d = (Graphics2D) g; 
+        g2d.setBackground(getForeground());
+
     }
     
     public static void main(String[] args) {
