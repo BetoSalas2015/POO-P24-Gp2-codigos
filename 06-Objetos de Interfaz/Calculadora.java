@@ -2,12 +2,20 @@
   * Calculadora
   */
 import java.awt.*;
+import java.awt.event.*;
 
  public class Calculadora extends Frame {
+    // Variables de clase de Interfaz
     private Button btn0, btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9;
     private Button btnMas, btnMenos, btnMult, btnDiv, btnIgual, btnPunto, btnC;
     private TextField txtDisplay;
     private Panel pnlTeclado, pnlDisplay;
+
+    // Variables de clase de Funcionalidad
+    private double numero1, numero2, resultado;
+    private char operación;
+    private boolean operando, punto;        //  banderas
+    private String displaynum, sign;
 
     public Calculadora() {
         super("Calculadora");
@@ -54,17 +62,75 @@ import java.awt.*;
         add(pnlDisplay, "North");
         add(pnlTeclado, "Center");
 
+        //  Funcionalidad
+        operando = punto = true;
+
+        // Gestion de Eventos 
+        addWindowListener( new CloseWindow() );
     }
 
-    public boolean handleEvent(Event e) {
-        if (e.id == Event.WINDOW_DESTROY) {
-            hide();
+    private class CloseWindow extends WindowAdapter {
+        @Override
+        public void windowClosing(WindowEvent e) {
+            setVisible(false);
             dispose();
-            return true;
         }
-        return super.handleEvent(e);
+
     }
 
+
+    public boolean action(Event e, Object o) {
+        if (e.target instanceof Button) {
+            if (e.target == btnC) {
+                txtDisplay.setText("0");
+                operando = punto = true;
+                numero1 = numero2 = resultado = 0.0;
+            } else { 
+                if (e.target == btnMas || e.target == btnMenos || e.target == btnMult || e.target == btnDiv ) {
+                    if (operando) {
+                        Button btnTemp = (Button) e.target;
+                        sign = new String(btnTemp.getLabel());
+                        operación = sign.charAt(0);
+                        numero1 = Double.parseDouble( txtDisplay.getText() );
+                        txtDisplay.setText("0");
+                        operando = false;
+                    } //  de operando
+                } else {
+                    if (e.target == btnPunto) {
+                        if (punto) {
+                            displaynum = new String( txtDisplay.getText() );
+                            displaynum += ".";
+                            txtDisplay.setText(displaynum);
+                            punto = false;
+                            
+                        }
+                    } else {
+                        if (e.target == btnIgual) {
+                            numero2 = Double.parseDouble(txtDisplay.getText());
+                            switch (operación) {
+                                case '+': resultado = numero1 + numero2; break;
+                                case '-': resultado = numero1 - numero2; break;
+                                case '*': resultado = numero1 * numero2; break;
+                                case '/': resultado = numero1 / numero2; break;
+                            }
+                            txtDisplay.setText(String.valueOf(resultado));
+                            operando = punto = true;
+                        } else {
+                            displaynum = new String( txtDisplay.getText());
+                            if ( displaynum.equals("0") ) {
+                                displaynum = "";
+                            }    
+                            Button btnTemp = (Button) e.target;
+                            displaynum += btnTemp.getLabel();
+                            txtDisplay.setText(displaynum);
+                        } //  btnIgual
+                    } // btnPunto
+                } //  btnMas
+            }   //  btnC
+        } //  instanceof
+
+        return super.action(e, o);
+    }
 
     public static void main(String[] args) {
         Calculadora calculadora = new Calculadora();
@@ -73,3 +139,4 @@ import java.awt.*;
     }
     
  }
+
