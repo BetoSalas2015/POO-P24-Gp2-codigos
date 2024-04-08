@@ -3,13 +3,14 @@
   */
 import java.awt.*;
 import java.awt.event.*;
+import javax.swing.*;
 
- public class Calculadora extends Frame {
+ public class Calculadora extends JFrame {
     // Variables de clase de Interfaz
-    private Button btn0, btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9;
-    private Button btnMas, btnMenos, btnMult, btnDiv, btnIgual, btnPunto, btnC;
-    private TextField txtDisplay;
-    private Panel pnlTeclado, pnlDisplay;
+    private JButton btn0, btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9;
+    private JButton btnMas, btnMenos, btnMult, btnDiv, btnIgual, btnPunto, btnC;
+    private JTextField txtDisplay;
+    private JPanel pnlTeclado, pnlDisplay;
 
     // Variables de clase de Funcionalidad
     private double numero1, numero2, resultado;
@@ -21,22 +22,22 @@ import java.awt.event.*;
         super("Calculadora");
 
         //  Creación de los componentes
-        btn0 = new Button("0");         btn1 = new Button("1");
-        btn2 = new Button("2");         btn3 = new Button("3");
-        btn4 = new Button("4");         btn5 = new Button("5");
-        btn6 = new Button("6");         btn7 = new Button("7");
-        btn8 = new Button("8");         btn9 = new Button("9");
-        btnMas = new Button("+");       btnMenos = new Button("-");
-        btnMult = new Button("*");      btnDiv = new Button("/");
-        btnIgual = new Button("=");     btnPunto = new Button(".");
-        btnC = new Button("C");     
+        btn0 = new JButton("0");         btn1 = new JButton("1");
+        btn2 = new JButton("2");         btn3 = new JButton("3");
+        btn4 = new JButton("4");         btn5 = new JButton("5");
+        btn6 = new JButton("6");         btn7 = new JButton("7");
+        btn8 = new JButton("8");         btn9 = new JButton("9");
+        btnMas = new JButton("+");       btnMenos = new JButton("-");
+        btnMult = new JButton("*");      btnDiv = new JButton("/");
+        btnIgual = new JButton("=");     btnPunto = new JButton(".");
+        btnC = new JButton("C");     
         
-        txtDisplay = new TextField("0");
+        txtDisplay = new JTextField("0");
 
-        pnlDisplay = new Panel();
-        pnlTeclado = new Panel();
+        pnlDisplay = new JPanel();
+        pnlTeclado = new JPanel();
 
-        //  Organizar los paneles
+        //  Organizar los JPaneles
         pnlTeclado.setLayout( new GridLayout(4, 4, 2, 2) );
         pnlTeclado.add(btn7);
         pnlTeclado.add(btn8);
@@ -67,6 +68,30 @@ import java.awt.event.*;
 
         // Gestion de Eventos 
         addWindowListener( new CloseWindow() );
+
+        btn0.addActionListener(new BotonNumerico());
+        btn1.addActionListener(new BotonNumerico());
+        btn2.addActionListener(new BotonNumerico());
+        btn3.addActionListener(new BotonNumerico());
+        btn4.addActionListener(new BotonNumerico());
+        btn5.addActionListener(new BotonNumerico());
+        btn6.addActionListener(new BotonNumerico());
+        btn7.addActionListener(new BotonNumerico());
+        btn8.addActionListener(new BotonNumerico());
+        btn9.addActionListener(new BotonNumerico());
+        btnMas.addActionListener(new BotonOpera());
+        btnMenos.addActionListener(new BotonOpera());
+        btnMult.addActionListener(new BotonOpera());
+        btnDiv.addActionListener(new BotonOpera());
+        btnPunto.addActionListener(new BotonPunto());
+        btnIgual.addActionListener(new BotonIgual());
+        btnC.addActionListener(new BotonC());
+
+        //  Configuración de la interfaz
+        setSize(400, 400);
+        setVisible(true);
+        txtDisplay.setEditable(false);
+        setResizable(false);
     }
 
     private class CloseWindow extends WindowAdapter {
@@ -78,64 +103,76 @@ import java.awt.event.*;
 
     }
 
-
-    public boolean action(Event e, Object o) {
-        if (e.target instanceof Button) {
-            if (e.target == btnC) {
-                txtDisplay.setText("0");
-                operando = punto = true;
-                numero1 = numero2 = resultado = 0.0;
-            } else { 
-                if (e.target == btnMas || e.target == btnMenos || e.target == btnMult || e.target == btnDiv ) {
-                    if (operando) {
-                        Button btnTemp = (Button) e.target;
-                        sign = new String(btnTemp.getLabel());
-                        operación = sign.charAt(0);
-                        numero1 = Double.parseDouble( txtDisplay.getText() );
-                        txtDisplay.setText("0");
-                        operando = false;
-                    } //  de operando
-                } else {
-                    if (e.target == btnPunto) {
-                        if (punto) {
-                            displaynum = new String( txtDisplay.getText() );
-                            displaynum += ".";
-                            txtDisplay.setText(displaynum);
-                            punto = false;
-                            
-                        }
-                    } else {
-                        if (e.target == btnIgual) {
-                            numero2 = Double.parseDouble(txtDisplay.getText());
-                            switch (operación) {
-                                case '+': resultado = numero1 + numero2; break;
-                                case '-': resultado = numero1 - numero2; break;
-                                case '*': resultado = numero1 * numero2; break;
-                                case '/': resultado = numero1 / numero2; break;
-                            }
-                            txtDisplay.setText(String.valueOf(resultado));
-                            operando = punto = true;
-                        } else {
-                            displaynum = new String( txtDisplay.getText());
-                            if ( displaynum.equals("0") ) {
-                                displaynum = "";
-                            }    
-                            Button btnTemp = (Button) e.target;
-                            displaynum += btnTemp.getLabel();
-                            txtDisplay.setText(displaynum);
-                        } //  btnIgual
-                    } // btnPunto
-                } //  btnMas
-            }   //  btnC
-        } //  instanceof
-
-        return super.action(e, o);
+    public class BotonC implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            txtDisplay.setText("0");
+            operando = punto = true;
+            numero1 = numero2 = resultado = 0.0;          
+        }
+        
     }
+
+    public class BotonOpera implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (operando) {
+                sign = new String(e.getActionCommand());
+                operación = sign.charAt(0);
+                numero1 = Double.parseDouble( txtDisplay.getText() );
+                txtDisplay.setText("0");
+                operando = false;
+            } //  de operando           
+        }
+        
+    }
+
+    public class BotonPunto implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (punto) {
+                displaynum = new String( txtDisplay.getText() );
+                displaynum += ".";
+                txtDisplay.setText(displaynum);
+                punto = false; 
+            }          
+        }
+        
+    }
+
+    public class BotonIgual implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            numero2 = Double.parseDouble(txtDisplay.getText());
+            switch (operación) {
+                case '+': resultado = numero1 + numero2; break;
+                case '-': resultado = numero1 - numero2; break;
+                case '*': resultado = numero1 * numero2; break;
+                case '/': resultado = numero1 / numero2; break;
+            }
+            txtDisplay.setText(String.valueOf(resultado));
+            operando = punto = true;        
+        }
+        
+    }
+
+    public class BotonNumerico implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            displaynum = new String( txtDisplay.getText());
+            if ( displaynum.equals("0") ) {
+                displaynum = "";
+            }    
+            displaynum += e.getActionCommand();
+            txtDisplay.setText(displaynum);          
+        }
+        
+    }
+
 
     public static void main(String[] args) {
         Calculadora calculadora = new Calculadora();
-        calculadora.resize(400, 400);
-        calculadora.show();
+
     }
     
  }
